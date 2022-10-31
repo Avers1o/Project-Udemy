@@ -274,9 +274,20 @@ window.addEventListener('DOMContentLoaded', () => {
             // request.setRequestHeader('Content-Type', 'multipart/form-data'); 
             // При работе с FormData заголовок устанавливать не нужно!
 
-            const formData = new FormData(form);
+            request.setRequestHeader('Content-Type', 'application/json');
+            // При работе же с JSON заголовок указывается!
 
-            request.send(formData);
+            const formData = new FormData(form);
+            const object = {};
+
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);
+
+            // request.send(formData);
+            request.send(json);
 
             request.addEventListener('load', () => {
                 if (request.status === 200) {
