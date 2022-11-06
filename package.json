@@ -1,0 +1,22 @@
+{
+  "name": "udemy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avers1o/Local_Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Avers1o/Local_Server/issues"
+  },
+  "homepage": "https://github.com/Avers1o/Local_Server#readme",
+  "devDependencies": {
+    "json-server": "^0.17.1"
+  }
+}
