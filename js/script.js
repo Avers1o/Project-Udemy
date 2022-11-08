@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.body.style.overflow = '';
 
-        clearTimeout(modalTimerId);
+        // clearTimeout(modalTimerId);
     }
 
     modalTriggers.forEach(btn => {
@@ -151,7 +151,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-    const modalTimerId = setTimeout(openModal, 5000);
+    // const modalTimerId = setTimeout(openModal, 5000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -212,7 +212,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(url);
 
         if (!res.ok) {
-           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
 
         return await res.json();
@@ -226,9 +226,15 @@ window.addEventListener('DOMContentLoaded', () => {
     // });
 
     axios.get('http://localhost:3000/menu')
-    .then(data => data.data.forEach(({img, altimg, title, descr, price}) => {
-        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-    }));
+        .then(data => data.data.forEach(({
+            img,
+            altimg,
+            title,
+            descr,
+            price
+        }) => {
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        }));
 
 
 
@@ -272,7 +278,7 @@ window.addEventListener('DOMContentLoaded', () => {
             form.insertAdjacentElement('afterend', statusMessage);
 
             const formData = new FormData(form);
-            
+
             const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
             postData('http://localhost:3000/requests', json)
@@ -314,4 +320,60 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }, 4000);
     }
+
+
+
+    // Slider.
+
+    // Простой вариант.
+
+    const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current');
+
+    let slideIndex = 1;
+
+    showSlides(slideIndex);
+
+    if (slides.lenght < 10) {
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length;
+    }
+
+    function showSlides(i) {
+        if (i > slides.length) {
+            slideIndex = 1;
+        }
+
+        if (i < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach(item => {
+            item.style.display = 'none';
+        });
+
+        slides[slideIndex - 1].style.display = "block";
+
+        if (slideIndex < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    }
+
+    function plusSlides(i) {
+        showSlides(slideIndex += i);
+    }
+
+    prev.addEventListener('click', () => {
+        plusSlides(-1);
+    });
+
+    next.addEventListener('click', () => {
+        plusSlides(1);
+    });
 });
