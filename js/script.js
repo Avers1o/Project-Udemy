@@ -218,23 +218,17 @@ window.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
-    // getResourses('http://localhost:3000/menu')
-    // .then(data => {
-    //     data.forEach(({img, altimg, title, descr, price}) => {
-    //         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-    //     });
-    // });
-
-    axios.get('http://localhost:3000/menu')
-        .then(data => data.data.forEach(({
-            img,
-            altimg,
-            title,
-            descr,
-            price
-        }) => {
+    getResourses('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-        }));
+        });
+    });
+
+    // axios.get('http://localhost:3000/menu')
+    //     .then(data => data.data.forEach(({img, altimg, title, descr, price}) => {
+    //         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //     }));
 
 
 
@@ -325,55 +319,74 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Slider.
 
-    // Простой вариант.
+    // Усложненный вариант.
 
     const slides = document.querySelectorAll('.offer__slide'),
         prev = document.querySelector('.offer__slider-prev'),
         next = document.querySelector('.offer__slider-next'),
         total = document.querySelector('#total'),
-        current = document.querySelector('#current');
+        current = document.querySelector('#current'),
+        slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+        slidesField = document.querySelector('.offer__slider-inner'),
+        width = window.getComputedStyle(slidesWrapper).width;
 
     let slideIndex = 1;
+    let offset = 0;
 
-    showSlides(slideIndex);
+    modifiedCounter(total, slides.length);
+    modifiedCounter(current, slideIndex);
 
-    if (slides.lenght < 10) {
-        total.textContent = `0${slides.length}`;
-    } else {
-        total.textContent = slides.length;
-    }
+    slidesField.style.width = 100 * slides.length +'%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
 
-    function showSlides(i) {
-        if (i > slides.length) {
-            slideIndex = 1;
-        }
+    slidesWrapper.style.overflow = 'hidden';
 
-        if (i < 1) {
-            slideIndex = slides.length;
-        }
-
-        slides.forEach(item => {
-            item.style.display = 'none';
-        });
-
-        slides[slideIndex - 1].style.display = "block";
-
-        if (slideIndex < 10) {
-            current.textContent = `0${slideIndex}`;
-        } else {
-            current.textContent = slideIndex;
-        }
-    }
-
-    function plusSlides(i) {
-        showSlides(slideIndex += i);
-    }
-
-    prev.addEventListener('click', () => {
-        plusSlides(-1);
+    slides.forEach(slide => {
+        slide.style.width = width;
     });
 
     next.addEventListener('click', () => {
-        plusSlides(1);
+        if (offset === parseInt(width) * (slides.length - 1)) {
+            offset = 0;
+        } else {
+            offset += parseInt(width);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex === slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex ++;
+        }
+
+        modifiedCounter(current, slideIndex);
     });
+
+    prev.addEventListener('click', () => {
+        if (offset === 0) {
+            offset = parseInt(width) * (slides.length - 1);
+        } else {
+            offset -= parseInt(width);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex === 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+
+        modifiedCounter(current, slideIndex);
+    });
+
+    function modifiedCounter(counter, value) {
+        if (value < 10) {
+            counter.textContent = `0${value}`;
+        } else {
+            counter.textContent = value;
+        }
+    }
 });
